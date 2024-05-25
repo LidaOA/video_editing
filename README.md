@@ -28,8 +28,8 @@ python main.py --folder_videos __chemin vers le dossier vidéos__  --folder_audi
 
 Le montage se compose d'éléments modifiables au niveau du code par les éléments suivants :
 
-+ Un fondu sur la vidéo à monter au niveau de l'audio de 2.5 sec en entrée et de 5 secondes en sortie, aisi qu'un fondu au noir sur l'image d'une seconde au début de la vidéo et d'une seconde à la fin de la vidéo
-+ Un fondu au niveau du fond sonore de 2.5 sec en entrée et de 5 secondes en sortie
++ Un fondu sur la vidéo à monter au niveau de l'audio de 2 sec en entrée et de 5 secondes en sortie, aisi qu'un fondu au noir sur l'image d'une seconde au début de la vidéo et d'une seconde à la fin de la vidéo
++ Un fondu au niveau du fond sonore de 2 sec en entrée et de 5 secondes en sortie
 
 Le projet permet aussi de récupérer des captures d'écran utilisables (entre autres) pour des miniatures.
 Le nombre de miniatures effectué est compris entre 1 et 6 (inclus) et reste lui aussi modifiable à l'intérieur du code. 
