@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 def fade_voice_video(link_video:str,fade = True) -> VideoFileClip :
-    audio = AudioFileClip(link_video).fx(afx.audio_fadein, 2.5).fx(afx.audio_fadeout, 3.5)
+    audio = AudioFileClip(link_video).fx(afx.audio_fadein, 2).fx(afx.audio_fadeout, 5)
     video = VideoFileClip(link_video).set_audio(audio)
     if fade :
         video = video.fx(vfx.fadein,1).fx(vfx.fadeout,1)
@@ -14,13 +14,14 @@ def fade_voice_video(link_video:str,fade = True) -> VideoFileClip :
 
 def backsound_processing(link_backsound: str) -> AudioFileClip:
     backsound = AudioFileClip(link_backsound)
-    backsound = backsound.fx(afx.audio_fadein, 1.5).fx(afx.audio_fadeout, 2).fx(afx.volumex,0.05)
+    backsound = backsound.fx(afx.volumex,0.04)
     return backsound
 
 def mixing_video_and_backsound(video : VideoFileClip,backsound : AudioFileClip) -> VideoFileClip:
     if backsound.duration > video.duration:
         backsound = backsound.set_duration(video.duration)
-
+    
+    backsound = backsound.fx(afx.audio_fadein, 2).fx(afx.audio_fadeout, 5)
     audio_end = CompositeAudioClip([video.audio, backsound])
     video_mixed = video.set_audio(audio_end)
     return video_mixed
