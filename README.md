@@ -6,7 +6,7 @@ Pour l
 
 Le projet nécessite obligatoirement (pour l'instant) :
 
-+ un dossier nommé "output" dans le repértoire courant
++ un dossier nommé "output" dans le repértoire courant contenant les vidéos que l'utilisateur souhaite monter
 
 soit (au choix) : 
 
