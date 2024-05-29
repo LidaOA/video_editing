@@ -23,7 +23,7 @@ Par défaut, le programme va chercher les informations dans les dossiers "input_
 
 Autrement on lance en ajoutant les 2 arguments explicités un peu plus avec :
 ```
-python main.py --folder_videos __chemin vers le dossier vidéos__  --folder_audios __chemin vers le dossier des fonds sonores__
+python main.py --folder_videos 'chemin vers le dossier vidéos'  --folder_audios 'chemin vers le dossier des fonds sonores'
 ```
 
 Le montage se compose d'éléments modifiables au niveau du code par les éléments suivants :
