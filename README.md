@@ -23,12 +23,12 @@ Par défaut, le programme va chercher les informations dans les dossiers "input_
 
 Autrement on lance en ajoutant les 2 arguments explicités un peu plus avec :
 ```
-python main.py --folder_videos __chemin vers le dossier vidéos__  --folder_audios __chemin vers le dossier des fonds sonores__
+python main.py --folder_videos 'chemin vers le dossier vidéos'  --folder_audios 'chemin vers le dossier des fonds sonores'
 ```
 
 Le montage se compose d'éléments modifiables au niveau du code par les éléments suivants :
 
-+ Un fondu sur la vidéo à monter au niveau de l'audio de 2 sec en entrée et de 5 secondes en sortie, aisi qu'un fondu au noir sur l'image d'une seconde au début de la vidéo et d'une seconde à la fin de la vidéo
++ Un fondu sur la vidéo à monter au niveau de l'audio de 2 sec en entrée et de 5 secondes en sortie, ainsi qu'un fondu au noir sur l'image d'une seconde au début de la vidéo et d'une seconde à la fin de la vidéo
 + Un fondu au niveau du fond sonore de 2 sec en entrée et de 5 secondes en sortie
 
 Le projet permet aussi de récupérer des captures d'écran utilisables (entre autres) pour des miniatures.
