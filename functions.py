@@ -1,29 +1,52 @@
 import random
 
-from moviepy.editor import VideoFileClip,AudioFileClip,CompositeAudioClip,vfx,afx,concatenate_videoclips
+from moviepy import VideoFileClip,AudioFileClip,concatenate_videoclips,afx,vfx,CompositeAudioClip,CompositeVideoClip
+
 import os
 import numpy as np
 from PIL import Image
 
-def fade_voice_video(link_video:str,fade = True) -> VideoFileClip :
-    audio = AudioFileClip(link_video).fx(afx.audio_fadein, 2).fx(afx.audio_fadeout, 5)
-    video = VideoFileClip(link_video).set_audio(audio)
-    if fade :
-        video = video.fx(vfx.fadein,1).fx(vfx.fadeout,1)
+
+def fade_voice_video(link_video: str, fade=True) -> VideoFileClip:
+    """Applique des effets de fondu audio et vidéo à un clip vidéo."""
+    audio = AudioFileClip(link_video)
+    # Utilisation de with_fx pour appliquer les effets audio en une seule étape
+    audio = audio.with_effects([
+        afx.AudioFadeIn(2.5),
+        afx.AudioFadeOut(3),
+        afx.MultiplyVolume(1.3)
+    ])
+    video = VideoFileClip(link_video).with_audio(audio)
+    if fade:
+      # Utilisation de with_fx pour appliquer les effets vidéo en une seule étape
+        video = video.with_effects([
+            vfx.FadeIn(1),
+            vfx.FadeOut(1)
+        ])
     return video
 
+
 def backsound_processing(link_backsound: str) -> AudioFileClip:
+    """Traite une piste audio de fond en ajustant le volume."""
     backsound = AudioFileClip(link_backsound)
-    backsound = backsound.fx(afx.volumex,0.04)
+    # Utilisation de with_volume pour ajuster le volume
+    backsound = backsound.with_volume_scaled(0.04)
     return backsound
 
-def mixing_video_and_backsound(video : VideoFileClip,backsound : AudioFileClip) -> VideoFileClip:
+
+def mixing_video_and_backsound(video: VideoFileClip, backsound: AudioFileClip) -> VideoFileClip:
+    """Mélange une piste audio avec la bande son d'une vidéo."""
     if backsound.duration > video.duration:
-        backsound = backsound.set_duration(video.duration)
-    
-    backsound = backsound.fx(afx.audio_fadein, 2).fx(afx.audio_fadeout, 5)
+        # Utilisation de with_duration pour définir la durée
+        backsound = backsound.with_duration(video.duration)
+
+        # Utilisation de with_effects pour appliquer les effets audio en une seule étape
+    backsound = backsound.with_effects([
+        afx.AudioFadeIn(2),
+        afx.AudioFadeOut(3),
+    ])
     audio_end = CompositeAudioClip([video.audio, backsound])
-    video_mixed = video.set_audio(audio_end)
+    video_mixed = video.with_audio(audio_end)
     return video_mixed
 
 def get_screenshots_adjusted(video : VideoFileClip) -> list[Image]:
@@ -40,39 +63,27 @@ def get_screenshots_adjusted(video : VideoFileClip) -> list[Image]:
     return imgs
 
 
-def tune_db(link_backsound: str,factor_tune : float) -> AudioFileClip:
+def tune_db(link_backsound: str, factor_tune: float) -> AudioFileClip:
+    """Ajuste le volume d'un clip audio."""
     sound = AudioFileClip(link_backsound)
-    soud = sound.fx(afx.volumex,factor_tune)
+    # Utilisation de with_volume_scaled pour ajuster le volume
+    sound = sound.with_volume_scaled(factor_tune)
     return sound
 
 
-
-def merger(link_video:str, link_sound:str):
+def merger(link_video: str, link_sound: str):
+    """Fusionne une vidéo avec une bande son puis l'enregistre directement."""
     videoclip = fade_voice_video(link_video)
     backsoundclip = backsound_processing(link_sound)
     videoclip_mixed = mixing_video_and_backsound(videoclip, backsoundclip)
-    videoclip_mixed.set_duration(videoclip_mixed.duration)
-    videoclip_mixed.write_videofile(f'{os.getcwd()}\output\processed_{random_with_N_digits(5)}.mp4', fps=25, threads=1, codec="libx264")
-    videoclip_mixed.reader.close()
-    videoclip.reader.close()
-
-
-def append_or_insert(path_origin_video : str, path_insert_video : str, time_insert : float = None):
-
-    videoclip_origin = VideoFileClip(path_origin_video)
-    videoclip_insert = VideoFileClip(path_origin_video)
-
-    if ((videoclip_insert.w != videoclip_origin.w) and (videoclip_insert.h != videoclip_origin.h)):
-        raise ValueError("Size of Video1 and Video2 are different")
-
-    if time_insert != None and time_insert > 0:
-        videoclip_origin_first = videoclip_origin.set_duration(time_insert)
-
-    videoclip_origin_last = videoclip_origin.set_start(time_insert+videoclip_insert.duration)
-    clips = [videoclip_origin_first,videoclip_insert.crossfadein(0.3),
-              videoclip_origin_last.crossfadein(0.3)]
-    final_video = concatenate_videoclips(clips,method='compose')
-    return final_video
+    # Pas besoin de set_duration ici car la durée est déjà définie
+    # La durée du clip final est définie par mixing_video_and_backsound
+    videoclip_mixed.write_videofile(
+        f'{os.getcwd()}/output/processed_{random_with_N_digits(5)}.mp4', fps=25, threads=1, codec="libx264")
+    # Fermeture des ressources
+    videoclip_mixed.audio.close()
+    videoclip_mixed.close()
+    videoclip.close()
 
 
 def random_with_N_digits(n):
